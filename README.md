@@ -23,3 +23,12 @@ See [LICENSE](https://github.com/Azure-Samples/dotnet-core-api/blob/master/LICEN
 
 This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/). For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
   
+az group create --name myAuthApiApp --location "East US"
+az appservice plan create --name myAuthAppServicePlan --resource-group myAuthApiApp --sku FREE
+az webapp create --resource-group DotNetSqlApp --plan myDotNetSqlApp --name ApiFrontEnd11 --deployment-local-git --query deploymentLocalGitUrl
+az webapp create --resource-group DotNetSqlApp --plan myDotNetSqlApp --name ApiBackEnd11 --deployment-local-git --query deploymentLocalGitUrl
+
+"https://jwilkadminApi@apifrontend11.scm.azurewebsites.net/ApiFrontEnd11.git"
+"https://jwilkadminApi@apibackend11.scm.azurewebsites.net/ApiBackEnd11.git"
+
+
