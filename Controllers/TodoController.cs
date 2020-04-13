@@ -13,9 +13,6 @@ namespace TodoApi.Controllers
     [Route("api/[controller]")]
     public class TodoController : Controller
     {
-
-        private static readonly HttpClient _client = new HttpClient();
-        private static readonly string _remoteUrl = "https://apibackend11.azurewebsites.net";
         private readonly TodoContext _context;
         #endregion
 
@@ -34,25 +31,19 @@ namespace TodoApi.Controllers
         [HttpGet]
         public IEnumerable<TodoItem> GetAll()
         {
-            var data = _client.GetStringAsync($"{_remoteUrl}/api/Todo").Result;
-            return JsonConvert.DeserializeObject<List<TodoItem>>(data);
-            /*       return _context.TodoItems.ToList(); */
+            return _context.TodoItems.ToList();
         }
 
         #region snippet_GetByID
         [HttpGet("{id}", Name = "GetTodo")]
         public IActionResult GetById(long id)
         {
-            var data = _client.GetStringAsync($"{_remoteUrl}/api/Todo/{id}").Result;
-            return Content(data, "application/json");
-            /*
             var item = _context.TodoItems.FirstOrDefault(t => t.Id == id);
             if (item == null)
             {
                 return NotFound();
             }
             return new ObjectResult(item);
-            */
         }
         #endregion
         #endregion
@@ -60,10 +51,6 @@ namespace TodoApi.Controllers
         [HttpPost]
         public IActionResult Create([FromBody] TodoItem item)
         {
-            var response = _client.PostAsJsonAsync($"{_remoteUrl}/api/Todo", item).Result;
-            var data = response.Content.ReadAsStringAsync().Result;
-            return Content(data, "application/json");
-            /*
             if (item == null)
             {
                 return BadRequest();
@@ -73,8 +60,6 @@ namespace TodoApi.Controllers
             _context.SaveChanges();
 
             return CreatedAtRoute("GetTodo", new { id = item.Id }, item);
-
-            */
         }
         #endregion
 
@@ -82,7 +67,22 @@ namespace TodoApi.Controllers
         [HttpPut("{id}")]
         public IActionResult Update(long id, [FromBody] TodoItem item)
         {
-            var res = _client.PutAsJsonAsync($"{_remoteUrl}/api/Todo/{id}", item).Result;
+            if (item == null || item.Id != id)
+            {
+                return BadRequest();
+            }
+
+            var todo = _context.TodoItems.FirstOrDefault(t => t.Id == id);
+            if (todo == null)
+            {
+                return NotFound();
+            }
+
+            todo.IsComplete = item.IsComplete;
+            todo.Name = item.Name;
+
+            _context.TodoItems.Update(todo);
+            _context.SaveChanges();
             return new NoContentResult();
         }
         #endregion
@@ -91,7 +91,14 @@ namespace TodoApi.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(long id)
         {
-            var res = _client.DeleteAsync($"{_remoteUrl}/api/Todo/{id}").Result;
+            var todo = _context.TodoItems.FirstOrDefault(t => t.Id == id);
+            if (todo == null)
+            {
+                return NotFound();
+            }
+
+            _context.TodoItems.Remove(todo);
+            _context.SaveChanges();
             return new NoContentResult();
         }
         #endregion
