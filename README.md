@@ -28,7 +28,19 @@ az appservice plan create --name myAuthAppServicePlan --resource-group myAuthApi
 az webapp create --resource-group DotNetSqlApp --plan myDotNetSqlApp --name ApiFrontEnd11 --deployment-local-git --query deploymentLocalGitUrl
 az webapp create --resource-group DotNetSqlApp --plan myDotNetSqlApp --name ApiBackEnd11 --deployment-local-git --query deploymentLocalGitUrl
 
-"https://jwilkadminApi@apifrontend11.scm.azurewebsites.net/ApiFrontEnd11.git"
-"https://jwilkadminApi@apibackend11.scm.azurewebsites.net/ApiBackEnd11.git"
+"https://jwilkadmin23@apifrontend11.scm.azurewebsites.net/ApiFrontEnd11.git"
+"https://jwilkadmin23@apibackend11.scm.azurewebsites.net/ApiBackEnd11.git"
+
+https://docs.microsoft.com/en-us/azure/app-service/app-service-web-tutorial-auth-aad
+
+Backend App - http://ApiBackEnd11.azurewebsites.net
+FrontEndApp - http://ApiFrontEnd11.azurewebsites.net
 
 
+git remote add frontend "https://jwilkadmin23@apifrontend11.scm.azurewebsites.net:443/ApiFrontEnd11.git"
+git push frontend master
+
+git remote add backend "https://jwilkadmin23@apibackend11.scm.azurewebsites.net:443/ApiBackEnd11.git"
+git push backend master
+
+--user-name jwilkadmin23 --password R3l3ntl3ss
